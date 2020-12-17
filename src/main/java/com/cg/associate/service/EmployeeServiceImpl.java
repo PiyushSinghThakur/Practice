@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.cg.associate.dao.EmployeeRepository;
 import com.cg.associate.entity.Employee;
 import com.cg.associate.exception.EmployeeNotFoundException;
+import com.cg.associate.exception.InvalidEmpIdException;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
@@ -22,12 +23,16 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 	@Override
 	public String deleteEmployee(long empId) {
-		Optional<Employee> employeeById = employeeRepository.findById(empId);
-		if(employeeById.isPresent()) {
-			employeeRepository.delete(employeeById.get());
-			return "Employee record deleted";
+		if(empId>0) {
+			Optional<Employee> employeeById = employeeRepository.findById(empId);
+			if(employeeById.isPresent()) {
+				employeeRepository.delete(employeeById.get());
+				return "Employee record deleted";
+			}else
+				throw new EmployeeNotFoundException("Employee not found");
 		}else
-			throw new EmployeeNotFoundException("Employee not found");
+			throw new InvalidEmpIdException("!! Invalid Emp ID !!");
+		
 	}
 
 	
